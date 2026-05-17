@@ -1,5 +1,6 @@
-
--- séma létrehozása
+-- Séma létrehozása
+-- - Táblák
+-- - Szekvenciák
 CREATE TABLE dim_customer (
     customer_id       NUMBER PRIMARY KEY,
     customer_name     VARCHAR2(100) NOT NULL,
@@ -70,4 +71,4 @@ CREATE SEQUENCE seq_customer_id START WITH 11 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE seq_branch_id START WITH 11 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE seq_account_id START WITH 111 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE seq_transaction_id START WITH 21 INCREMENT BY 1 NOCACHE;
-CREATE SEQUENCE seq_fact_transaction_log_id START WITH 1 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE seq_npl_fact_transaction START WITH 1 INCREMENT BY 1 NOCACHE;
