@@ -1,0 +1,9 @@
+DROP TABLE fact_transaction CASCADE CONSTRAINTS;
+DROP TABLE dim_account CASCADE CONSTRAINTS;
+DROP TABLE dim_customer CASCADE CONSTRAINTS;
+DROP TABLE dim_branch CASCADE CONSTRAINTS;
+
+DROP SEQUENCE seq_transaction_id;
+DROP SEQUENCE seq_account_id;
+DROP SEQUENCE seq_customer_id;
+DROP SEQUENCE seq_branch_id;

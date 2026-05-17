@@ -1,0 +1,60 @@
+-- táblák feltöltése
+INSERT INTO dim_customer VALUES (1, 'Kovács Péter', 'Budapest', 'Lakossági', 'Alacsony');
+INSERT INTO dim_customer VALUES (2, 'Nagy Anna', 'Debrecen', 'Lakossági', 'Közepes');
+INSERT INTO dim_customer VALUES (3, 'Szabó Gábor', 'Szeged', 'Prémium', 'Alacsony');
+INSERT INTO dim_customer VALUES (4, 'Tóth Eszter', 'Győr', 'Lakossági', 'Magas');
+INSERT INTO dim_customer VALUES (5, 'Varga Zoltán', 'Budapest', 'KKV', 'Közepes');
+INSERT INTO dim_customer VALUES (6, 'Horváth Kft.', 'Pécs', 'KKV', 'Alacsony');
+INSERT INTO dim_customer VALUES (7, 'Molnár Júlia', 'Miskolc', 'Lakossági', 'Közepes');
+INSERT INTO dim_customer VALUES (8, 'Farkas András', 'Budapest', 'Prémium', 'Alacsony');
+INSERT INTO dim_customer VALUES (9, 'Kiss Dóra', 'Kecskemét', 'Lakossági', 'Magas');
+INSERT INTO dim_customer VALUES (10, 'Balogh Bt.', 'Székesfehérvár', 'KKV', 'Közepes');
+
+INSERT INTO dim_branch VALUES (1, 'Budapest Központ', 'Budapest', 'Közép-Magyarország');
+INSERT INTO dim_branch VALUES (2, 'Debrecen Fiók', 'Debrecen', 'Kelet-Magyarország');
+INSERT INTO dim_branch VALUES (3, 'Szeged Fiók', 'Szeged', 'Dél-Alföld');
+INSERT INTO dim_branch VALUES (4, 'Győr Fiók', 'Győr', 'Nyugat-Dunántúl');
+INSERT INTO dim_branch VALUES (5, 'Pécs Fiók', 'Pécs', 'Dél-Dunántúl');
+INSERT INTO dim_branch VALUES (6, 'Miskolc Fiók', 'Miskolc', 'Észak-Magyarország');
+INSERT INTO dim_branch VALUES (7, 'Kecskemét Fiók', 'Kecskemét', 'Dél-Alföld');
+INSERT INTO dim_branch VALUES (8, 'Székesfehérvár Fiók', 'Székesfehérvár', 'Közép-Dunántúl');
+INSERT INTO dim_branch VALUES (9, 'Budapest Prémium', 'Budapest', 'Közép-Magyarország');
+INSERT INTO dim_branch VALUES (10, 'Online Bank', 'Budapest', 'Digitális');
+
+INSERT INTO dim_account VALUES (101, 1, 1, 'Lakossági folyószámla', DATE '2023-01-10');
+INSERT INTO dim_account VALUES (102, 2, 2, 'Lakossági folyószámla', DATE '2023-02-15');
+INSERT INTO dim_account VALUES (103, 3, 3, 'Prémium számla', DATE '2023-03-20');
+INSERT INTO dim_account VALUES (104, 4, 4, 'Lakossági folyószámla', DATE '2023-04-05');
+INSERT INTO dim_account VALUES (105, 5, 1, 'Vállalati számla', DATE '2023-05-12');
+INSERT INTO dim_account VALUES (106, 6, 5, 'Vállalati számla', DATE '2023-06-18');
+INSERT INTO dim_account VALUES (107, 7, 6, 'Lakossági folyószámla', DATE '2023-07-22');
+INSERT INTO dim_account VALUES (108, 8, 9, 'Prémium számla', DATE '2023-08-01');
+INSERT INTO dim_account VALUES (109, 9, 7, 'Lakossági folyószámla', DATE '2023-09-14');
+INSERT INTO dim_account VALUES (110, 10, 8, 'Vállalati számla', DATE '2023-10-03');
+
+INSERT INTO fact_transaction VALUES (1, 101, DATE '2024-01-05', 'Jóváírás', 350000);
+INSERT INTO fact_transaction VALUES (2, 101, DATE '2024-01-12', 'Kártyás vásárlás', -25000);
+INSERT INTO fact_transaction VALUES (3, 102, DATE '2024-01-18', 'Jóváírás', 280000);
+INSERT INTO fact_transaction VALUES (4, 103, DATE '2024-01-22', 'Jóváírás', 650000);
+INSERT INTO fact_transaction VALUES (5, 105, DATE '2024-01-25', 'Jóváírás', 1200000);
+INSERT INTO fact_transaction VALUES (6, 106, DATE '2024-02-03', 'Jóváírás', 950000);
+INSERT INTO fact_transaction VALUES (7, 101, DATE '2024-02-10', 'Átutalás', -70000);
+INSERT INTO fact_transaction VALUES (8, 104, DATE '2024-02-14', 'Jóváírás', 310000);
+INSERT INTO fact_transaction VALUES (9, 108, DATE '2024-02-20', 'Jóváírás', 780000);
+INSERT INTO fact_transaction VALUES (10, 110, DATE '2024-02-26', 'Jóváírás', 1600000);
+INSERT INTO fact_transaction VALUES (11, 102, DATE '2024-03-04', 'Kártyás vásárlás', -42000);
+INSERT INTO fact_transaction VALUES (12, 103, DATE '2024-03-09', 'Átutalás', -150000);
+INSERT INTO fact_transaction VALUES (13, 105, DATE '2024-03-11', 'Jóváírás', 1350000);
+INSERT INTO fact_transaction VALUES (14, 106, DATE '2024-03-17', 'Készpénzfelvétel', -120000);
+INSERT INTO fact_transaction VALUES (15, 107, DATE '2024-03-19', 'Jóváírás', 295000);
+INSERT INTO fact_transaction VALUES (16, 108, DATE '2024-04-02', 'Kártyás vásárlás', -88000);
+INSERT INTO fact_transaction VALUES (17, 109, DATE '2024-04-08', 'Jóváírás', 260000);
+INSERT INTO fact_transaction VALUES (18, 110, DATE '2024-04-13', 'Átutalás', -400000);
+INSERT INTO fact_transaction VALUES (19, 105, DATE '2024-04-21', 'Jóváírás', 1420000);
+INSERT INTO fact_transaction VALUES (20, 103, DATE '2024-04-28', 'Jóváírás', 690000);
+
+SELECT COUNT(*) FROM dim_customer;
+SELECT COUNT(*) FROM dim_branch;
+SELECT COUNT(*) FROM dim_account;
+SELECT COUNT(*) FROM fact_transaction;
+commit;
