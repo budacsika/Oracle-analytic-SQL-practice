@@ -1,14 +1,14 @@
 /*
-Készíts lekérdezést, amely:
+    Készíts lekérdezést, amely:
 
-- ügyfelek teljes tranzakciós forgalmát számolja,
-- régión belül rangsorolja őket,
-- és jelenítse meg egymás mellett:
-    - RANK()
-    - DENSE_RANK()
-    - ROW_NUMBER()
+    - ügyfelek teljes tranzakciós forgalmát számolja,
+    - régión belül rangsorolja őket,
+    - és jelenítse meg egymás mellett:
+        - RANK()
+        - DENSE_RANK()
+        - ROW_NUMBER()
 
-Az eredményt régiónként és forgalom szerint csökkenő sorrendben jelenítsd meg.
+    Az eredményt régiónként és forgalom szerint csökkenő sorrendben jelenítsd meg.
 */
 with ugyfel_forgalom as (
     SELECT
@@ -61,15 +61,15 @@ select *
   order by honap, regio, rangsor;
 
 /*
-Készíts lekérdezést, amely:
-    - ügyfelenként,
-    - hónaponként kiszámolja a teljes tranzakciós forgalmat,
-    - megmutatja az előző havi forgalmat,
-    - kiszámolja a havi változást,
-    - valamint százalékos változást is számol.
+    Készíts lekérdezést, amely:
+        - ügyfelenként,
+        - hónaponként kiszámolja a teljes tranzakciós forgalmat,
+        - megmutatja az előző havi forgalmat,
+        - kiszámolja a havi változást,
+        - valamint százalékos változást is számol.
 
-Elvárt oszlopok:
-    ügyfél neve, hónap, havi forgalom, előző havi forgalom, különbség, százalékos változás
+    Elvárt oszlopok:
+        ügyfél neve, hónap, havi forgalom, előző havi forgalom, különbség, százalékos változás
 */
 with ugyfel_eredmenyek as (
     select  c.customer_name as ugyfel, 
@@ -92,3 +92,102 @@ select  ugyfel,
   from  ugyfel_eredmenyek
   order by ugyfel, honap;
   
+
+/*
+    Készíts lekérdezést, amely:
+    
+        számlánként időrendben listázza a tranzakciókat,
+        minden tranzakciónál kiszámolja az aktuális futó egyenleget,
+        külön jelenítse meg:
+        - tranzakció dátuma
+        - tranzakció típusa
+        - összeg
+        - futó egyenleg
+    
+    Elvárt: a futó egyenleg számlánként külön számolódjon, időrendben épüljön fel.
+*/
+select  a.account_id, 
+        f.transaction_date,
+        f.transaction_type,
+        f.amount,
+        sum(f.amount) over (partition by a.account_id order by f.transaction_date, f.transaction_id) as egyenleg
+ from  dim_account a
+inner  join fact_transaction f on a.account_id = f.account_id
+order  by a.account_id, f.transaction_date;
+
+
+/*
+    Készíts lekérdezést, amely:
+    
+    - ügyfelenként megmutatja:
+        - az utolsó tranzakció dátumát,
+        - az utolsó tranzakció óta eltelt napok számát,
+        - az összes tranzakció számát,
+        - a teljes forgalmat,
+    - és jelöld meg azokat az ügyfeleket, akik:
+        - legalább 60 napja inaktívak.
+    
+    Elvárt oszlopok:
+        ügyfél neve, utolsó tranzakció dátuma, inaktív napok száma, tranzakciók száma, teljes forgalom, státusz (AKTIV / INAKTIV)
+*/
+
+with ugyfel_tr as ( 
+    select  c.customer_name                                                 as cust,
+            max(f.transaction_date) over (partition by c.customer_name)     as max_tr_date,
+            sum(f.amount) over (partition by c.customer_name)               as amount_by_cust,
+            count(f.transaction_id) over (partition by c.customer_name)     as tr_number
+      from  dim_customer c
+     inner  join dim_account a on c.customer_id = a.customer_id
+     inner  join fact_transaction f on a.account_id = f.account_id
+)
+select  distinct
+        cust,
+        max_tr_date,
+        round(sysdate - max_tr_date, 0)   as last_tr_days,
+        amount_by_cust,
+        case
+            when round(sysdate - max_tr_date, 0) > 800
+            then 'inactive'
+            else 'active'
+        end                               as cust_aktivity
+from ugyfel_tr;
+
+
+/*  
+  Feladat — 3 hónapos mozgóátlag (rolling average)
+  Készíts lekérdezést, amely:
+  
+  - ügyfelenként és hónaponként számolja a havi forgalmat,
+  - majd kiszámolja:
+    - az adott hónap forgalmát
+    - az előző 2 hónap + aktuális hónap átlagát (3 hónapos mozgóátlag)
+  Elvárt oszlopok:
+    - ügyfél neve
+    - hónap
+    - havi forgalom
+    - 3 hónapos mozgóátlag
+*/
+
+with ugyfel_havi_forgalom as (
+  select  c.customer_name                   as customer, 
+          trunc(f.transaction_date, 'MM')   as month_start,
+          sum(f.amount)                     as amount_by_month
+    from dim_customer c
+    inner join dim_account a on c.customer_id = a.customer_id
+    inner join fact_transaction f on f.account_id = a.account_id  
+    group by c.customer_name,
+          trunc(f.transaction_date, 'MM')
+ )
+select customer,
+        month_start,
+        to_char(amount_by_month, '999,999,999') as havi,
+        to_char(lag(amount_by_month, 1) over (partition by customer order by month_start), '999,999,999') as prev1_m,
+        to_char(lag(amount_by_month, 2) over (partition by customer order by month_start), '999,999,999') as prev2_m,
+        to_char(ROUND(
+        (
+            amount_by_month
+            + NVL(LAG(amount_by_month, 1) OVER ( PARTITION BY customer ORDER BY month_start), 0)
+            + NVL(LAG(amount_by_month, 2) OVER ( PARTITION BY customer ORDER BY month_start), 0)
+        ) / 3, 2 ), '999,999,999.99') AS rolling_3_month_avg
+from ugyfel_havi_forgalom
+ORDER BY customer, month_start;
