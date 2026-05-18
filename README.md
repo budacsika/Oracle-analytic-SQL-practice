@@ -13,7 +13,7 @@ A projekt célja:
 
 Séma link: https://dbdiagram.io/d/Oracle-analytic-SQL-practice-6a0afaf8697f99c1679f59d0
 
-- Oracle Database 23ai Free
+- Oracle Database 26ai Free
 - Docker / version 29.4.3, build 055a478
 - Oracle SQL Developer / 24.3.1.347
 - macOS / Tahoe 26.3.1
