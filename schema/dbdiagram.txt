@@ -1,0 +1,56 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table dim_customer {
+  customer_id NUMBER [primary key]
+  customer_name VARCHAR2(100) [not null]
+  city VARCHAR2(50)
+  customer_segment VARCHAR2(30)
+  risk_category VARCHAR2(30)
+}
+
+Table dim_branch {
+  branch_id NUMBER [pk]
+  branch_name VARCHAR2(100) [not null]
+  city VARCHAR2(50)
+  region VARCHAR2(50)
+}
+
+Table dim_account {
+  account_id NUMBER [pk]
+  customer_id NUMBER [not null]
+  branch_id NUMBER [not null]
+  account_type VARCHAR2(50)
+  opened_date DATE
+}
+
+Table fact_transaction {
+  transaction_id NUMBER [pk]
+  account_id NUMBER [not null]
+  transaction_date DATE [not null]
+  transaction_type VARCHAR2(50)
+  amount NUMBER(12,2)
+}
+
+Table npl_fact_transaction {
+  log_id NUMBER [pk]
+  log_date DATE [not null, default: `sysdate`]
+  operation_type VARCHAR2(10) [not null]
+  transaction_id NUMBER
+  old_account_id NUMBER
+  new_account_id NUMBER
+  old_transaction_date DATE
+  new_transaction_date DATE
+  old_transaction_type VARCHAR2(50)
+  new_transaction_type VARCHAR2(50)
+  old_amount NUMBER(12,2)
+  new_amount NUMBER(12,2)
+  changed_by VARCHAR2(100)
+  client_identifier VARCHAR2(100)
+}
+
+Ref fk_account_customer:dim_customer.customer_id < dim_account.customer_id
+
+Ref fk_account_branch:dim_branch.branch_id < dim_account.branch_id
+
+Ref fk_transaction_account:dim_account.account_id < fact_transaction.account_id
